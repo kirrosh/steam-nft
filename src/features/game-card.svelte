@@ -4,8 +4,19 @@
 	/** @type {import('../interfaces/IOwnedGame').IOwnedGame} */
 	export let game;
 
-	const achivements = new Set(game.playesStats?.achievements?.map((item) => item.name));
-	console.log(achivements);
+	const achivementsData = new Map(
+		game.schema?.availableGameStats?.achievements?.map((item) => [item.name, item])
+	);
+
+	const lastAchivements = game.achivements
+		?.filter((item) => item.unlocktime > 0)
+		.sort((a, b) => b.unlocktime - a.unlocktime);
+
+	const lastAchivementsSet = new Set(lastAchivements?.map((item) => item.apiname));
+
+	const otherAchivements = game.achivements
+		?.filter((item) => !lastAchivementsSet.has(item.apiname))
+		.sort((a, b) => b.unlocktime - a.unlocktime);
 </script>
 
 <div
@@ -20,13 +31,35 @@
 				</h5>
 			</div>
 		</button>
-		<div slot="content" class="grid gap-2 grid-cols-9 place-items-center pb-2">
-			{#each game?.schema?.availableGameStats.achievements || [] as item}
-				<img
-					src={achivements.has(item.name) ? item.icon : item.icongray}
-					alt={item.displayName}
-					class="w-10 h-10"
-				/>
+		<div slot="content" class="flex flex-col gap-2 pb-2 text-white">
+			{#each lastAchivements || [] as item}
+				<div class="flex gap-2 items-center w-full px-2">
+					<img
+						src={achivementsData.get(item.apiname)?.icon}
+						alt={achivementsData.get(item.apiname)?.displayName}
+						class="w-10 h-10"
+					/>
+					<div class="flex-1">
+						<div class="flex justify-between">
+							<p class="font-bold">{achivementsData.get(item.apiname)?.displayName}</p>
+							<p>{new Date(item.unlocktime * 1000).toLocaleString()}</p>
+						</div>
+						<p>{achivementsData.get(item.apiname)?.description}</p>
+					</div>
+				</div>
+			{/each}
+			{#each otherAchivements || [] as item}
+				<div class="flex gap-2 px-2">
+					<img
+						src={achivementsData.get(item.apiname)?.icongray}
+						alt={achivementsData.get(item.apiname)?.displayName}
+						class="w-10 h-10"
+					/>
+					<div>
+						<p class="font-bold">{achivementsData.get(item.apiname)?.displayName}</p>
+						<p>{achivementsData.get(item.apiname)?.description}</p>
+					</div>
+				</div>
 			{/each}
 		</div>
 	</Collapse>
