@@ -6,6 +6,7 @@ import {
 	STEAM_URL_GetSchemaForGame,
 	STEAM_URL_GetUserStatsForGame
 } from '../../constants/url';
+import { pinata } from '../../features/pinata';
 import type { IOwnedGame } from '../../interfaces/IOwnedGame';
 import type { IPlayerInfo } from '../../interfaces/IPlayerInfo';
 import type { IPlayerStats } from '../../interfaces/IPlayerStats';

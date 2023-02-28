@@ -1,6 +1,6 @@
 <script>
-	import Collapse from '../../features/collapse.svelte';
-	import GameCard from '../../features/game-card.svelte';
+	import AchivementModal from './achivement-modal.svelte';
+	import GameCard from './game-card.svelte';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -21,4 +21,6 @@
 			<GameCard {game} />
 		{/each}
 	</div>
+
+	<AchivementModal />
 </div>

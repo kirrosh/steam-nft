@@ -1,7 +1,8 @@
 <script>
-	import Collapse from './collapse.svelte';
+	import Collapse from '../../features/collapse.svelte';
+	import { achivementModal } from './stores';
 
-	/** @type {import('../interfaces/IOwnedGame').IOwnedGame} */
+	/** @type {import('../../interfaces/IOwnedGame').IOwnedGame} */
 	export let game;
 
 	const achivementsData = new Map(
@@ -17,6 +18,21 @@
 	const otherAchivements = game.achivements
 		?.filter((item) => !lastAchivementsSet.has(item.apiname))
 		.sort((a, b) => b.unlocktime - a.unlocktime);
+
+	// @ts-ignore
+	const onAchivementClick = (item) => {
+		const ach = achivementsData.get(item.apiname);
+		if (!ach) {
+			return;
+		}
+		achivementModal.set({
+			unlocktime: item.unlocktime,
+			description: ach.description,
+			name: ach.name,
+			displayName: ach.displayName,
+			icon: ach.icon
+		});
+	};
 </script>
 
 <div
@@ -33,7 +49,10 @@
 		</button>
 		<div slot="content" class="flex flex-col gap-2 pb-2 text-white">
 			{#each lastAchivements || [] as item}
-				<div class="flex gap-2 items-center w-full px-2">
+				<button
+					on:click={() => onAchivementClick(item)}
+					class="flex gap-2 items-center w-full px-2"
+				>
 					<img
 						src={achivementsData.get(item.apiname)?.icon}
 						alt={achivementsData.get(item.apiname)?.displayName}
@@ -46,7 +65,7 @@
 						</div>
 						<p>{achivementsData.get(item.apiname)?.description}</p>
 					</div>
-				</div>
+				</button>
 			{/each}
 			{#each otherAchivements || [] as item}
 				<div class="flex gap-2 px-2">
