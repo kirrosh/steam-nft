@@ -2,16 +2,27 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { pinata } from '../../../features/pinata';
 import { json } from '@sveltejs/kit';
 
-export const POST = (async () => {
-	const body = {
-		title: 'Weapon of Fate',
-		description: 'Clear an escape attempt with a hidden Weapon Aspect',
-		image:
-			'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1145360/06ae59ceaedac2b66b2d7ed8da68d64838c4bb82.jpg'
-		// unlocktime:
-		// platform: 'Steam',
-		// steamId: '76561198000000000',
-	};
+export type PinataPostBody = {
+	title: string;
+	description: string;
+	image: string;
+	aattributes?: {
+		trait_type: string;
+		value: string;
+	}[];
+};
+
+export const POST = (async ({ request }) => {
+	const body: PinataPostBody = await request.json();
+	// const body = {
+	// 	title: 'Weapon of Fate',
+	// 	description: 'Clear an escape attempt with a hidden Weapon Aspect',
+	// 	image:
+	// 		'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1145360/06ae59ceaedac2b66b2d7ed8da68d64838c4bb82.jpg'
+	// 	// unlocktime:
+	// 	// platform: 'Steam',
+	// 	// steamId: '76561198000000000',
+	// };
 	const options = {
 		pinataMetadata: {
 			name: 'SteamTest',

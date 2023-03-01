@@ -20,12 +20,15 @@
 	on:click|self={() => dialog.close()}
 >
 	<div on:click|stopPropagation>
-		<slot name="header" />
+		<header class="flex justify-between">
+			<slot name="title" />
+			<button on:click={() => dialog.close()}>X</button>
+		</header>
 		<hr />
 		<slot />
 		<hr />
 		<!-- svelte-ignore a11y-autofocus -->
-		<button autofocus on:click={() => dialog.close()}>close modal</button>
+		<!-- <button autofocus on:click={() => dialog.close()}>close modal</button> -->
 	</div>
 </dialog>
 
