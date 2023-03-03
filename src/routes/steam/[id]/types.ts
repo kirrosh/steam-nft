@@ -1,5 +1,3 @@
-import { writable } from 'svelte/store';
-
 export type IAchivementModalInfo = {
 	name: string;
 	displayName: string;
@@ -7,5 +5,3 @@ export type IAchivementModalInfo = {
 	icon: string;
 	unlocktime: number;
 };
-
-export const achivementModal = writable<IAchivementModalInfo>();

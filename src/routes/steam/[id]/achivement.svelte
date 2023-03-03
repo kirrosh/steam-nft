@@ -1,15 +1,14 @@
 <script>
 	import { ofetch } from 'ofetch';
-	import Modal from 'src/features/modal.svelte';
-	// import { GATEAWAY_URL } from 'src/features/pinata';
+	import DaisyModal from 'src/features/daisy-modal.svelte';
 	import { safeMint } from 'src/features/wagmi/game-achievement-api';
 	import { metamaskAccount } from 'src/features/wagmi/stores';
-	import { achivementModal } from './stores';
 
 	export const GATEAWAY_URL = 'https://gateway.pinata.cloud/ipfs/';
 
-	/** @type {import('./stores').IAchivementModalInfo} */
-	let ach;
+	/** @type {import('./types').IAchivementModalInfo} */
+	export let ach;
+
 	/** @type {`0x${string}` | undefined} */
 	let address;
 
@@ -17,10 +16,7 @@
 		address = value;
 	});
 
-	achivementModal.subscribe((value) => {
-		ach = value;
-	});
-	const test = async () => {
+	const mint = async () => {
 		const res = await ofetch('/api/pinata', {
 			method: 'POST',
 			body: {
@@ -47,15 +43,12 @@
 	};
 </script>
 
-<Modal showModal={achivementModal} on:click>
-	<p slot="title">{ach?.displayName}</p>
-	<div class="flex gap-2 items-center w-full px-2">
-		<img src={ach?.icon} alt={ach?.displayName} class="w-10 h-10" />
-		<div class="flex-1">
-			<p class="font-bold">{ach?.displayName}</p>
-			<p>{ach?.description}</p>
-			<p>{new Date(ach?.unlocktime * 1000).toLocaleString()}</p>
-			<button on:click={test}>Mint</button>
-		</div>
+<div class="card card-side bg-base-100 shadow-xl">
+	<figure><img src={ach.icon} alt={ach.displayName} class="w-36 h-36" /></figure>
+	<div class="card-body">
+		<h2 class="card-title">{ach.displayName}</h2>
+		<p>{ach.description}</p>
+		<p>{new Date(ach.unlocktime * 1000).toLocaleString()}</p>
+		<button on:click={mint} class="btn">Mint</button>
 	</div>
-</Modal>
+</div>

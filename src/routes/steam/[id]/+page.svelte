@@ -1,5 +1,4 @@
 <script>
-	import AchivementModal from './achivement-modal.svelte';
 	import GameCard from './game-card.svelte';
 
 	/** @type {import('./$types').PageData} */
@@ -21,6 +20,4 @@
 			<GameCard {game} />
 		{/each}
 	</div>
-
-	<AchivementModal />
 </div>

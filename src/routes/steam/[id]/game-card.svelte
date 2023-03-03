@@ -1,6 +1,6 @@
 <script>
 	import Collapse from 'src/features/collapse.svelte';
-	import { achivementModal } from './stores';
+	import Achivement from './achivement.svelte';
 
 	/** @type {import('src/interfaces/IOwnedGame').IOwnedGame} */
 	export let game;
@@ -18,21 +18,6 @@
 	const otherAchivements = game.achivements
 		?.filter((item) => !lastAchivementsSet.has(item.apiname))
 		.sort((a, b) => b.unlocktime - a.unlocktime);
-
-	// @ts-ignore
-	const onAchivementClick = (item) => {
-		const ach = achivementsData.get(item.apiname);
-		if (!ach) {
-			return;
-		}
-		achivementModal.set({
-			unlocktime: item.unlocktime,
-			description: ach.description,
-			name: ach.name,
-			displayName: ach.displayName,
-			icon: ach.icon
-		});
-	};
 </script>
 
 <div
@@ -47,25 +32,20 @@
 				</h5>
 			</div>
 		</button>
-		<div slot="content" class="flex flex-col gap-2 pb-2 text-white">
+		<div slot="content" class="flex flex-col gap-2 pb-2 text-white px-2">
 			{#each lastAchivements || [] as item}
-				<button
-					on:click={() => onAchivementClick(item)}
-					class="flex gap-2 items-center w-full px-2"
-				>
-					<img
-						src={achivementsData.get(item.apiname)?.icon}
-						alt={achivementsData.get(item.apiname)?.displayName}
-						class="w-10 h-10"
+				{@const ach = achivementsData.get(item.apiname)}
+				{#if ach}
+					<Achivement
+						ach={{
+							description: ach.description,
+							displayName: ach.displayName,
+							icon: ach.icon,
+							name: ach.name,
+							unlocktime: item.unlocktime
+						}}
 					/>
-					<div class="flex-1">
-						<div class="flex justify-between">
-							<p class="font-bold">{achivementsData.get(item.apiname)?.displayName}</p>
-							<p>{new Date(item.unlocktime * 1000).toLocaleString()}</p>
-						</div>
-						<p>{achivementsData.get(item.apiname)?.description}</p>
-					</div>
-				</button>
+				{/if}
 			{/each}
 			{#each otherAchivements || [] as item}
 				<div class="flex gap-2 px-2">
