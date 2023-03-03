@@ -1,9 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { pinata } from '../../../features/pinata';
+import { pinata } from 'src/features/pinata';
 import { json } from '@sveltejs/kit';
+import type { PinataPinResponse } from '@pinata/sdk';
 
 export type PinataPostBody = {
-	title: string;
+	name: string;
 	description: string;
 	image: string;
 	aattributes?: {
@@ -14,18 +15,9 @@ export type PinataPostBody = {
 
 export const POST = (async ({ request }) => {
 	const body: PinataPostBody = await request.json();
-	// const body = {
-	// 	title: 'Weapon of Fate',
-	// 	description: 'Clear an escape attempt with a hidden Weapon Aspect',
-	// 	image:
-	// 		'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1145360/06ae59ceaedac2b66b2d7ed8da68d64838c4bb82.jpg'
-	// 	// unlocktime:
-	// 	// platform: 'Steam',
-	// 	// steamId: '76561198000000000',
-	// };
 	const options = {
 		pinataMetadata: {
-			name: 'SteamTest',
+			name: body.name,
 			keyvalues: {
 				customKey: 'customValue',
 				customKey2: 'customValue2'
@@ -36,7 +28,7 @@ export const POST = (async ({ request }) => {
 		}
 	};
 
-	const res = await pinata.pinJSONToIPFS(body, options as any);
+	const res: PinataPinResponse = await pinata.pinJSONToIPFS(body, options as any);
 
 	return json(res);
 	// do something

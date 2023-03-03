@@ -37,6 +37,8 @@
 	"type": "module",
 	"dependencies": {
 		"@pinata/sdk": "^2.1.0",
+		"@wagmi/core": "^0.9.7",
+		"ethers": "5",
 		"ofetch": "^1.0.1"
 	}
 }

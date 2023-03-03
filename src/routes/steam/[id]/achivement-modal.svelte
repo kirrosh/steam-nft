@@ -1,17 +1,27 @@
 <script>
 	import { ofetch } from 'ofetch';
-	import Modal from '../../features/modal.svelte';
+	import Modal from 'src/features/modal.svelte';
+	// import { GATEAWAY_URL } from 'src/features/pinata';
+	import { safeMint } from 'src/features/wagmi/game-achievement-api';
+	import { metamaskAccount } from 'src/features/wagmi/stores';
 	import { achivementModal } from './stores';
+
+	export const GATEAWAY_URL = 'https://gateway.pinata.cloud/ipfs/';
 
 	/** @type {import('./stores').IAchivementModalInfo} */
 	let ach;
+	/** @type {`0x${string}` | undefined} */
+	let address;
+
+	metamaskAccount.subscribe((value) => {
+		address = value;
+	});
 
 	achivementModal.subscribe((value) => {
 		ach = value;
-		console.log(value);
 	});
-	function test() {
-		ofetch('/api/pinata', {
+	const test = async () => {
+		const res = await ofetch('/api/pinata', {
 			method: 'POST',
 			body: {
 				name: ach.displayName,
@@ -19,13 +29,22 @@
 				image: ach.icon,
 				attributes: [
 					{
+						display_type: 'date',
 						trait_type: 'Unlock time',
-						value: new Date(ach.unlocktime * 1000).toLocaleString()
+						value: ach.unlocktime
 					}
 				]
 			}
 		});
-	}
+
+		if (address) {
+			const mintRes = await safeMint({
+				address,
+				URI: `${GATEAWAY_URL}/${res.IpfsHash}`
+			});
+			console.log(mintRes);
+		}
+	};
 </script>
 
 <Modal showModal={achivementModal} on:click>

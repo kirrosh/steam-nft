@@ -1,8 +1,8 @@
 <script>
-	import Collapse from '../../features/collapse.svelte';
+	import Collapse from 'src/features/collapse.svelte';
 	import { achivementModal } from './stores';
 
-	/** @type {import('../../interfaces/IOwnedGame').IOwnedGame} */
+	/** @type {import('src/interfaces/IOwnedGame').IOwnedGame} */
 	export let game;
 
 	const achivementsData = new Map(
